@@ -1,27 +1,33 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Property IgniterLabs\\Reports\\DashboardWidgets\\SmartReports\:\:\$reportBuilder \(IgniterLabs\\Reports\\Models\\ReportBuilder\|null\) does not accept Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/DashboardWidgets/SmartReports.php
-
-		-
 			message: '#^Access to an undefined property Igniter\\Flame\\Database\\Model\:\:\$rule_class\.$#'
 			identifier: property.notFound
 			count: 1
 			path: src/FormWidgets/ReportEditor.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$count\.$#'
+			message: '#^Access to an undefined property Igniter\\Cart\\Models\\Menu\:\:\$count\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Listeners/ExtendDashboardCharts.php
+
+		-
+			message: '#^Access to an undefined property Igniter\\Cart\\Models\\Menu\:\:\$label\.$#'
 			identifier: property.notFound
 			count: 2
 			path: src/Listeners/ExtendDashboardCharts.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$label\.$#'
+			message: '#^Access to an undefined property Igniter\\User\\Models\\Customer\:\:\$count\.$#'
 			identifier: property.notFound
-			count: 4
+			count: 1
+			path: src/Listeners/ExtendDashboardCharts.php
+
+		-
+			message: '#^Access to an undefined property Igniter\\User\\Models\\Customer\:\:\$label\.$#'
+			identifier: property.notFound
+			count: 2
 			path: src/Listeners/ExtendDashboardCharts.php
 
 		-
