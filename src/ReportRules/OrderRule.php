@@ -127,7 +127,7 @@ class OrderRule extends BaseRule
                 'type' => 'string',
                 'input' => 'select',
                 'multiple' => true,
-                'values' => Category::getDropdownOptions(),
+                'values' => $this->getCategoryOptions(),
                 'operators' => $this->getCategoriesOperators(),
             ],
             [
@@ -135,7 +135,7 @@ class OrderRule extends BaseRule
                 'label' => lang('igniterlabs.reports::default.label_menus'),
                 'type' => 'string',
                 'input' => 'select',
-                'values' => Menu::getDropdownOptions(),
+                'values' => $this->getMenuOptions(),
                 'operators' => $this->getMenusOperators(),
             ],
         ];
@@ -165,7 +165,10 @@ class OrderRule extends BaseRule
 
     public function getReportQuery(Carbon $start, Carbon $end): Builder|QueryBuilder
     {
-        return Order::query()->whereBetween('order_date', [$start, $end]);
+        $query = Order::query()->whereBetween('order_date', [$start, $end]);
+        $this->locationApplyScope($query);
+
+        return $query;
     }
 
     #[Override]
@@ -280,6 +283,22 @@ class OrderRule extends BaseRule
             'equal', 'not_equal',
             'in', 'not_in',
         ];
+    }
+
+    protected function getCategoryOptions(): array
+    {
+        $query = Category::query()->whereIsEnabled();
+        $this->locationApplyScope($query);
+
+        return $query->pluck('name', 'category_id')->all();
+    }
+
+    protected function getMenuOptions(): array
+    {
+        $query = Menu::query()->whereIsEnabled();
+        $this->locationApplyScope($query);
+
+        return $query->pluck('menu_name', 'menu_id')->all();
     }
 
     protected function getLocationIdOptions(): array
