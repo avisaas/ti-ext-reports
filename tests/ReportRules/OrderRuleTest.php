@@ -134,7 +134,7 @@ it('gets report data with date range correctly', function(): void {
         ]);
 });
 
-it('limits orders and filter options to the user\'s locations', function(): void {
+it("limits orders and filter options to the user's locations", function(): void {
     $assigned = Location::factory()->create();
     $other = Location::factory()->create();
     Order::factory()->create(['location_id' => $assigned->getKey(), 'order_date' => now()->toDateString()]);
