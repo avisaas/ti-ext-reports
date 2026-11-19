@@ -9,8 +9,7 @@
         }
     ],
     "require": {
-        "tastyigniter/core": "^v4.0",
-        "ianvizarra/query-builder-parser": "^v1.0"
+        "tastyigniter/core": "^v4.0"
     },
     "require-dev": {
         "larastan/larastan": "^3.0",

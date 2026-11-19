@@ -76,4 +76,9 @@ return [
     'help_columns' => 'Choose the columns to display in the reports view and include in CSV exports.',
 
     'alert_report_rule_class_not_found' => 'Report rule class: %s not found',
+    'alert_query_invalid_condition' => "Report rule condition can only be one of: 'and', 'or'.",
+    'alert_query_value_must_be_array' => 'Report rule field (%s) should be an array, but it is not.',
+    'alert_query_value_must_not_be_array' => 'Report rule field (%s) should not be an array, but it is.',
+    'alert_query_between_requires_two_values' => 'Report rule field (%s) should be an array with only two items.',
+    'alert_query_field_not_allowed' => 'Report rule field (%s) is not an allowed filter.',
 ];
