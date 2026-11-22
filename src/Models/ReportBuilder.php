@@ -12,9 +12,9 @@ use Igniter\Flame\Database\Model;
 use Igniter\Flame\Exception\FlashException;
 use IgniterLabs\Reports\Classes\BaseRule;
 use IgniterLabs\Reports\Classes\Manager;
+use IgniterLabs\Reports\Classes\QueryBuilderParser;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
-use timgws\QueryBuilderParser;
 
 /**
  * @property int $id
@@ -63,8 +63,9 @@ class ReportBuilder extends Model
 
         $reportQuery = $ruleObject->getReportQuery(Carbon::parse($start), Carbon::parse($end));
 
-        if ($ruleRawData = $this->getRawOriginal('rule_data', [])) {
-            $reportQuery = (new QueryBuilderParser)->parse($ruleRawData, $reportQuery);
+        if ($ruleData = $this->rule_data) {
+            $allowedFields = collect($ruleObject->defineFilters())->pluck('id')->all();
+            $reportQuery = (new QueryBuilderParser($allowedFields))->parse($ruleData, $reportQuery);
         }
 
         $tableData = $reportQuery->paginate($pageLimit, ['*'], 'page', $currentPage);

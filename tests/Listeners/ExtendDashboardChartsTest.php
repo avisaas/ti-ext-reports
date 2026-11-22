@@ -96,7 +96,11 @@ it('returns registered dashboard charts', function(): void {
     expect($datasets['top_customers']['datasetFrom'])->toBeCallable()
         ->and($datasets['bottom_customers']['datasetFrom'])->toBeCallable()
         ->and($datasets['best_selling_items']['datasetFrom'])->toBeCallable()
-        ->and($datasets['worst_selling_items']['datasetFrom'])->toBeCallable();
+        ->and($datasets['worst_selling_items']['datasetFrom'])->toBeCallable()
+        ->and($datasets['top_customers']['permission'])->toBe('Admin.Customers')
+        ->and($datasets['bottom_customers']['permission'])->toBe('Admin.Customers')
+        ->and($datasets['best_selling_items']['permission'])->toBe('Admin.Menus')
+        ->and($datasets['worst_selling_items']['permission'])->toBe('Admin.Menus');
 });
 
 it('returns correct dataset config for top customers', function(): void {

@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace IgniterLabs\Reports\Tests\ReportRules;
 
+use Igniter\Cart\Models\Category;
+use Igniter\Cart\Models\Menu;
 use Igniter\Cart\Models\Order;
 use Igniter\Local\Models\Location;
 use Igniter\User\Models\Customer;
+use Igniter\User\Models\User;
 use IgniterLabs\Reports\Models\ReportBuilder;
 use IgniterLabs\Reports\ReportRules\OrderRule;
 use Illuminate\Support\Carbon;
@@ -129,4 +132,29 @@ it('gets report data with date range correctly', function(): void {
             'order_date' => Carbon::now()->subDays(2)->setTime(14, 30)->isoFormat(lang('system::lang.moment.date_time_format')),
             'order_type' => 'Delivery',
         ]);
+});
+
+it("limits orders and filter options to the user's locations", function(): void {
+    $assigned = Location::factory()->create();
+    $other = Location::factory()->create();
+    Order::factory()->create(['location_id' => $assigned->getKey(), 'order_date' => now()->toDateString()]);
+    Order::factory()->create(['location_id' => $other->getKey(), 'order_date' => now()->toDateString()]);
+    $assignedMenu = Menu::factory()->create(['menu_name' => 'Assigned only', 'menu_status' => true]);
+    $assignedMenu->locations()->attach($assigned);
+    $otherMenu = Menu::factory()->create(['menu_name' => 'Other only', 'menu_status' => true]);
+    $otherMenu->locations()->attach($other);
+    $otherCategory = Category::factory()->create(['name' => 'Other category', 'status' => true]);
+    $otherCategory->locations()->attach($other);
+
+    $user = User::factory()->create(['super_user' => false]);
+    $user->locations()->attach($assigned);
+    $this->actingAs($user, 'igniter-admin');
+
+    $reportBuilder = new ReportBuilder;
+    $reportBuilder->rule_class = OrderRule::class;
+    $filters = collect(resolve(OrderRule::class)->defineFilters())->keyBy('id');
+
+    expect($reportBuilder->getTableData(now()->subDay()->toDateString(), now()->addDay()->toDateString())->total())->toBe(1)
+        ->and($filters['menus']['values'])->toContain('Assigned only')->not->toContain('Other only')
+        ->and($filters['categories']['values'])->not->toContain('Other category');
 });

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace IgniterLabs\Reports\Tests\Models;
 
+use Igniter\Cart\Models\Order;
 use Igniter\Flame\Exception\FlashException;
 use Igniter\System\Classes\ExtensionManager;
 use IgniterLabs\Reports\Models\ReportBuilder;
@@ -110,4 +111,38 @@ it('gets all columns when no specific columns are selected', function(): void {
     $result = $reportBuilder->getSelectedColumns();
 
     expect($result)->toHaveKeys(['order_id', 'order_total', 'order_date']);
+});
+
+it('applies rule data filters to table data', function(): void {
+    Order::factory()->create(['order_type' => 'delivery', 'order_date' => now()->toDateString()]);
+    Order::factory()->create(['order_type' => 'collection', 'order_date' => now()->toDateString()]);
+
+    $reportBuilder = new ReportBuilder;
+    $reportBuilder->rule_class = OrderRule::class;
+    $reportBuilder->rule_data = [
+        'condition' => 'AND',
+        'rules' => [
+            ['id' => 'order_type', 'field' => 'order_type', 'type' => 'string', 'operator' => 'in', 'value' => ['delivery']],
+        ],
+        'valid' => true,
+    ];
+
+    $result = $reportBuilder->getTableData(now()->subDay()->toDateString(), now()->addDay()->toDateString());
+
+    expect($result->total())->toBe(1)
+        ->and($result->first()['order_type'])->toBe('Delivery');
+});
+
+it('throws exception when rule data uses a field not defined in rule filters', function(): void {
+    $reportBuilder = new ReportBuilder;
+    $reportBuilder->rule_class = OrderRule::class;
+    $reportBuilder->rule_data = [
+        'condition' => 'AND',
+        'rules' => [
+            ['id' => 'order_id', 'field' => 'order_id', 'type' => 'integer', 'operator' => 'equal', 'value' => '1'],
+        ],
+    ];
+
+    expect(fn(): LengthAwarePaginator => $reportBuilder->getTableData(now()->subDay()->toDateString(), now()->addDay()->toDateString()))
+        ->toThrow(FlashException::class, sprintf(lang('igniterlabs.reports::default.alert_query_field_not_allowed'), 'order_id'));
 });

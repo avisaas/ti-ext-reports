@@ -24,24 +24,28 @@ class ExtendDashboardCharts
                     'label' => 'igniterlabs.reports::default.text_top_customers',
                     'type' => 'doughnut',
                     'icon' => 'fa fa-users',
+                    'permission' => 'Admin.Customers',
                     'datasetFrom' => $this->getDatasetConfig(...),
                 ]);
                 $charts->addDataset('bottom_customers', [
                     'label' => 'igniterlabs.reports::default.text_bottom_customers',
                     'type' => 'doughnut',
                     'icon' => 'fa fa-users',
+                    'permission' => 'Admin.Customers',
                     'datasetFrom' => $this->getDatasetConfig(...),
                 ]);
                 $charts->addDataset('best_selling_items', [
                     'label' => 'igniterlabs.reports::default.text_best_selling_items',
                     'type' => 'doughnut',
                     'icon' => 'fa fa-box-open',
+                    'permission' => 'Admin.Menus',
                     'datasetFrom' => $this->getDatasetConfig(...),
                 ]);
                 $charts->addDataset('worst_selling_items', [
                     'label' => 'igniterlabs.reports::default.text_worst_selling_items',
                     'type' => 'doughnut',
                     'icon' => 'fa fa-box-open',
+                    'permission' => 'Admin.Menus',
                     'datasetFrom' => $this->getDatasetConfig(...),
                 ]);
             });
